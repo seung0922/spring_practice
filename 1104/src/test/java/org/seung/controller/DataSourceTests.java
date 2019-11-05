@@ -1,8 +1,12 @@
 package org.seung.controller;
 
+
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.seung.mapper.TimeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -12,24 +16,20 @@ import lombok.extern.log4j.Log4j;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
-public class TimeMapperTests {
+public class DataSourceTests {
 	
 	@Autowired
-	private TimeMapper mapper;
+	private DataSource ds;
 	
 	@Test
-	public void testTime1() {
+	public void test1() throws Exception {
 		
-		log.info(mapper.getClass().getName());
+		Connection con = ds.getConnection();
 		
-		log.info(mapper.getTime1());
+		log.info(ds);
+		
+		con.close();
 		
 	}
 	
-	@Test
-	public void testTime2() {
-		
-		log.info(mapper.getTime2());
-		
-	}
 }
