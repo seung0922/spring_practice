@@ -10,7 +10,37 @@
     </insert>
 
     <select id="selectList" resultType="org.seung.domain.BoardVO">
-        select * from tbl_board where bno > 0 order by bno desc limit #{skip} , 10
+        select * 
+        from tbl_board 
+        where bno > 0 
+        order by bno desc 
+        limit #{skip} , 10
+    </select>
+    
+    <sql id="search">
+    	<if test="keyword != null">
+			<foreach collection="type" item="item" open=" and (" close=")" separator="or" >
+				<if test="item eq 'T'.toString()">
+				title like concat("%", #{keyword}, "%")
+				</if>
+				<if test="item eq 'C'.toString()">
+				content like concat("%", #{keyword}, "%")
+				</if>
+				<if test="item eq 'W'.toString()">
+				writer like concat("%", #{keyword}, "%")
+				</if>
+			</foreach>
+		</if>
+    </sql>
+    
+    <select id="searchList" resultType="org.seung.domain.BoardVO">
+    	select * from tbl_board
+		where bno > 0
+
+		<include refid="search"></include>
+		
+		order by bno desc 
+		limit #{skip} , #{amount}
     </select>
 
 </mapper>
