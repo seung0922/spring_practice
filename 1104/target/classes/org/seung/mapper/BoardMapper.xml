@@ -19,7 +19,7 @@
     
     <sql id="search">
     	<if test="keyword != null">
-			<foreach collection="type" item="item" open=" and (" close=")" separator="or" >
+			<foreach collection="types" item="item" open=" and (" close=")" separator="or" >
 				<if test="item eq 'T'.toString()">
 				title like concat("%", #{keyword}, "%")
 				</if>
