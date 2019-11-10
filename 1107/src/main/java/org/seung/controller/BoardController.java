@@ -1,14 +1,10 @@
 package org.seung.controller;
 
-<<<<<<< HEAD
 import java.util.List;
 
 import org.seung.domain.BoardVO;
 import org.seung.dto.PageDTO;
 import org.seung.dto.PageMaker;
-=======
-import org.seung.domain.BoardVO;
->>>>>>> ad392cd31be175a882f2b58423f7e430ec5715bd
 import org.seung.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +23,6 @@ public class BoardController {
 	
 	@Setter(onMethod_ = { @Autowired } )
 	private BoardService service;
-<<<<<<< HEAD
 	
 	@GetMapping("/list")
 	public void listGET(PageDTO dto, Model model) {
@@ -44,8 +39,6 @@ public class BoardController {
 		
 		model.addAttribute("pg", pg);
 	}
-=======
->>>>>>> ad392cd31be175a882f2b58423f7e430ec5715bd
 
 	@GetMapping("/register")
 	public void registerGET() {
@@ -58,12 +51,6 @@ public class BoardController {
 	public String registerPOST(BoardVO vo) {
 		
 		log.info("register post................");
-		log.info(vo);
-		
-		
-		log.info(service.register(vo));
-		
-		return "redirect:/board/list";
 		
 		service.register(vo);
 		
