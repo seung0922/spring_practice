@@ -10,4 +10,38 @@ insert into tbl_board (title, content, writer)
 values (#{title}, #{content}, #{writer})
 </insert>
 
+<sql id="search">
+	<if test="keyword != null and types != null">
+		<foreach collection="types" item="item" open="and (" close=")" separator="or">
+			<if test="item eq 'T'.toString()">
+				title like concat("%", #{keyword}, "%")
+			</if>
+			<if test="item eq 'C'.toString()">
+				content like concat("%", #{keyword}, "%")
+			</if>
+			<if test="item eq 'W'.toString()">
+				writer like concat("%", #{keyword}, "%")
+			</if>
+		</foreach>
+	</if>
+</sql>
+
+<select id="listPage" resultType="org.seung.domain.BoardVO">
+select *
+from tbl_board
+where bno > 0
+
+<include refid="search"></include>
+
+order by bno desc
+limit #{skip}, #{amount}
+</select>
+
+<select id="countPage" resultType="int">
+select count(bno)
+from tbl_board
+where bno > 0
+<include refid="search"></include>
+</select>
+
 </mapper>

@@ -3,6 +3,7 @@ package org.seung.service;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seung.domain.BoardVO;
+import org.seung.dto.PageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,6 +29,7 @@ public class BoardServiceTests {
 		vo.setContent("근데 제스가 졸린트데 어떡하죠?");
 		vo.setWriter("user12");
 		
+		log.info(vo);
 		log.info(service.register(vo));
 	}
 	

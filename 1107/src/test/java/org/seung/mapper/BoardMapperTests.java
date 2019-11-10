@@ -3,6 +3,7 @@ package org.seung.mapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seung.domain.BoardVO;
+import org.seung.dto.PageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -31,6 +32,31 @@ public class BoardMapperTests {
 		log.info(vo);
 		log.info(mapper.insert(vo));
 		
+	}
+	
+	@Test
+	public void listPageTest() {
+		
+		log.info("getList...................");
+		
+		PageDTO dto = new PageDTO();
+		dto.setKeyword("มน");
+		dto.setType("C");
+		
+		log.info(dto);
+		log.info(mapper.listPage(dto));
+		
+	}
+	
+	@Test
+	public void countPageTest() {
+		
+		log.info("countPage...............");
+		
+		PageDTO dto = new PageDTO();
+		
+		log.info(dto);
+		log.info(mapper.countPage(dto));
 	}
 	
 }
