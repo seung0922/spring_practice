@@ -27,14 +27,18 @@ values (#{title}, #{content}, #{writer})
 </sql>
 
 <select id="listPage" resultType="org.seung.domain.BoardVO">
-select *
+select bno, concat('[공지]', title) title, content, writer, regdate, notice
+from tbl_board
+where notice = 0
+union all
+(select *
 from tbl_board
 where bno > 0
 
 <include refid="search"></include>
 
 order by bno desc
-limit #{skip}, #{amount}
+limit #{skip}, #{amount})
 </select>
 
 <select id="selectByBno" resultType="org.seung.domain.BoardVO">

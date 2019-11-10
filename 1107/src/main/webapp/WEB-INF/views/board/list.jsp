@@ -48,9 +48,11 @@
 	<ul>
 		<c:forEach var="board" items="${list}">
 			<li>
-			<span><c:out value="${board.bno}"/></span>
-			<span><a class="bnoLink" href="${board.bno}"><c:out value="${board.title}"/></a></span>
-			<span><c:out value="${board.writer}"/></span>
+			<div class="notice">
+				<span><c:out value="${board.bno}"/></span>
+				<span><a class="bnoLink" href="${board.bno}"><c:out value="${board.title}"/></a></span>
+				<span><c:out value="${board.writer}"/></span>
+			</div>
 			</li>
 		</c:forEach>
 	</ul>
@@ -94,7 +96,18 @@
 		// hidden 태그 있는 form 변수로 저장
 		var $f1 = $("#f1");
 		
-		var $bnoTitle = $(".bnoLink");
+		var $bnoTitle = $(".bnoLink");	// 글 제목링크
+		var $notice = $(".notice");		// 리스트 한 줄 div
+		var txt = "";					// 글 제목 담기위한 변수
+		
+		// 글제목이 [공지] 로 시작하는 것은 배경색 바꿔준다
+		for(let i=0; i<$bnoTitle.length; i++) {
+			txt = $bnoTitle.eq(i).text();
+			
+			if(txt.indexOf("[공지]") != -1) {
+				$notice.eq(i).css("background-color", "pink");
+		    }
+		}
 		
 		// 링크걸린 타이틀 클릭했을 때 이벤트
 		$bnoTitle.on("click", function(e) {
