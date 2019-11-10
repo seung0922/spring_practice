@@ -25,8 +25,8 @@ public class BoardMapperTests {
 		log.info("insert...............");
 		
 		BoardVO vo = new BoardVO();
-		vo.setTitle("Á¦¸ñÀÌ´Ù¾Ó");
-		vo.setContent("±Ùµ¥ Á¦°¡ Á¹¸°µ¥ ¾î¶±ÇÏÁÒ?");
+		vo.setTitle("ì œëª©");
+		vo.setContent("ë‚´ìš©");
 		vo.setWriter("user00");
 		
 		log.info(vo);
@@ -40,7 +40,7 @@ public class BoardMapperTests {
 		log.info("getList...................");
 		
 		PageDTO dto = new PageDTO();
-		dto.setKeyword("Á¹");
+		dto.setKeyword("ì•ˆë…•");
 		dto.setType("C");
 		
 		log.info(dto);
@@ -59,4 +59,15 @@ public class BoardMapperTests {
 		log.info(mapper.countPage(dto));
 	}
 	
+	@Test
+	public void selectByBnoTest() {
+		log.info("select by bno..................");
+		
+		PageDTO dto = new PageDTO();
+		
+		log.info(dto);
+		dto.setBno(103);
+		
+		log.info(mapper.selectByBno(dto.getBno()));
+	}
 }

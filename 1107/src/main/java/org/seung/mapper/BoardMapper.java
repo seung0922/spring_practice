@@ -13,4 +13,6 @@ public interface BoardMapper {
 	
 	public int countPage(PageDTO dto);
 	
+	public BoardVO selectByBno(Integer bno);
+	
 }

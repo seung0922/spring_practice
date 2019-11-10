@@ -37,6 +37,12 @@ order by bno desc
 limit #{skip}, #{amount}
 </select>
 
+<select id="selectByBno" resultType="org.seung.domain.BoardVO">
+select *
+from tbl_board
+where bno = #{bno}
+</select>
+
 <select id="countPage" resultType="int">
 select count(bno)
 from tbl_board

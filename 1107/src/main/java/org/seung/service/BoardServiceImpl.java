@@ -15,32 +15,31 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 public class BoardServiceImpl implements BoardService {
 	
-	// mapper와  service연결! => service에 mapper 주입시킨다.
 	@Setter(onMethod_ = { @Autowired })
 	private BoardMapper mapper;
 
 	@Override
 	public boolean register(BoardVO vo) {
-		
 		log.info(vo);
-		
 		return mapper.insert(vo) == 1 ? true : false;
 	}
 
 	@Override
 	public List<BoardVO> getList(PageDTO dto) {
-		
 		log.info(dto);
-		
 		return mapper.listPage(dto);
 	}
 
 	@Override
 	public int getListCount(PageDTO dto) {
-		
 		log.info(dto);
-		
 		return mapper.countPage(dto);
+	}
+
+	@Override
+	public BoardVO findByBno(Integer bno) {
+		log.info(bno);
+		return mapper.selectByBno(bno);
 	}
 	
 	

@@ -13,4 +13,5 @@ public interface BoardService {
 	
 	public int getListCount(PageDTO dto);
 	
+	public BoardVO findByBno(Integer bno);
 }

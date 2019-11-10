@@ -9,17 +9,19 @@ public class PageDTO {
 	private int amount = 10;
 	private String keyword;
 	private String type;
+	private int bno;
 
 	public int getSkip() {
 		return (page -1) * amount;
 	}
 	
 	public String[] getTypes() {
-		// µé¾î¿Â type°ªÀÌ ¾ø°Å³ª °ø¹éÀÌ¸é null¹İÈ¯
+		// ë“¤ì–´ì˜¨ typeê°’ì´ ì—†ê±°ë‚˜ ê³µë°±ì´ë©´ nullë°˜í™˜
 		if(type == null || type.trim().length() == 0) {
 			return null;
 		}
-		// ÇÑ±ÛÀÚ¾¿ ºĞ¸®ÇØ¼­ ¹è¿­·Î ¸®ÅÏ
+		
+		// í•œê¸€ìì”© ë¶„ë¦¬í•´ì„œ ë°°ì—´ë¡œ ë¦¬í„´
 		return type.split("");
 	}
 

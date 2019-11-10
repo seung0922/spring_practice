@@ -32,30 +32,26 @@
 <body>
 <h1>List Page</h1>
 
-<form id="f1" method="get">
-	<input type="hidden" name="page" value="<c:out value="${pg.dto.page}"/>">
-	<input type="hidden" amount="amount" value="<c:out value="${pg.dto.amount}"/>">
-	<input type="hidden" amount="type" value="<c:out value="${pg.dto.type}"/>">
-	<input type="hidden" amount="keyword" value="<c:out value="${pg.dto.keyword}"/>">
-
-	<select name="type">
-		<option value="T">제목</option>
-		<option value="C">내용</option>
-		<option value="W">작성자</option>
-		<option value="TC">제목+내용</option>
-		<option value="TCW">제목+내용+작성자</option>
-	</select>
-	<input type="text" name="keyword" value="${pg.dto.keyword}">
-</form>
+<select name="type">
+	<option value="T">제목</option>
+	<option value="C">내용</option>
+	<option value="W">작성자</option>
+	<option value="TC">제목+내용</option>
+	<option value="TCW">제목+내용+작성자</option>
+</select>
+<input type="text" name="keyword" value="${pg.dto.keyword}">
 
 <button id="searchBtn">Search</button>
 
 
 <div class="listDiv">
 	<ul>
-		<li>번호 제목 내용 날짜</li>
 		<c:forEach var="board" items="${list}">
-			<li><c:out value="${board}"/></li>
+			<li>
+			<span><c:out value="${board.bno}"/></span>
+			<span><a class="bnoLink" href="${board.bno}"><c:out value="${board.title}"/></a></span>
+			<span><c:out value="${board.writer}"/></span>
+			</li>
 		</c:forEach>
 	</ul>
 </div>
@@ -74,16 +70,48 @@
 	</ul>
 </div>
 
+<form id="f1" method="get">
+	<input type="hidden" name="page" value="<c:out value="${pg.dto.page}"/>">
+	<input type="hidden" name="amount" value="<c:out value="${pg.dto.amount}"/>">
+	<input type="hidden" name="type" value="<c:out value="${pg.dto.type}"/>">
+	<input type="hidden" name="keyword" value="<c:out value="${pg.dto.keyword}"/>">
+</form>
+
 	<script
   src="https://code.jquery.com/jquery-3.4.1.min.js"
   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
   crossorigin="anonymous"></script>
 
 <script>
+	var msg = "<c:out value='${msg}'/>";
+	
+	if(msg === "SUCCESS") {
+		alert("작성이 완료되었습니다.");
+	}
+
 	$(document).ready(function() {
 		
 		// hidden 태그 있는 form 변수로 저장
 		var $f1 = $("#f1");
+		
+		var $bnoTitle = $(".bnoLink");
+		
+		// 링크걸린 타이틀 클릭했을 때 이벤트
+		$bnoTitle.on("click", function(e) {
+			
+			e.preventDefault();
+			
+			// 클릭한 글의 번호를 저장하여
+			var bnoValue = $(this).attr("href");
+			
+			// hidden 태그에 bno 추가한다음
+			$f1.append("<input type='hidden' name='bno' value='" + bnoValue +"'>");
+			
+			// 폼을 read페이지로 action을 통해 보낸다
+			$f1.attr("action", "/board/read");
+			
+			$f1.submit();
+		});
 		
 		// Search 버튼 눌렀을 때 이벤트
 		$("#searchBtn").on("click", function(e) {

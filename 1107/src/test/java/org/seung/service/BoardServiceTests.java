@@ -25,8 +25,8 @@ public class BoardServiceTests {
 		log.info("service..............");
 		
 		BoardVO vo = new BoardVO();
-		vo.setTitle("serviceÅ×½ºÆ®");
-		vo.setContent("±Ùµ¥ Á¦½º°¡ Á¹¸°Æ®µ¥ ¾î¶±ÇÏÁÒ?");
+		vo.setTitle("serviceí…ŒìŠ¤íŠ¸");
+		vo.setContent("ã… ã… ");
 		vo.setWriter("user12");
 		
 		log.info(vo);
