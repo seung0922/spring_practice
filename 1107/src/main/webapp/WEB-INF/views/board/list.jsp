@@ -31,16 +31,18 @@
 </head>
 <body>
 <h1>List Page</h1>
+<div>
+${result}
+</div>
 
-<select name="type">
+<select id="stype">
 	<option value="T">제목</option>
 	<option value="C">내용</option>
 	<option value="W">작성자</option>
 	<option value="TC">제목+내용</option>
 	<option value="TCW">제목+내용+작성자</option>
 </select>
-<input type="text" name="keyword" value="${pg.dto.keyword}">
-
+<input type="text" id="skeyword" value="${pg.dto.keyword}">
 <button id="searchBtn">Search</button>
 
 
@@ -73,10 +75,10 @@
 </div>
 
 <form id="f1" method="get">
-	<input type="hidden" name="page" value="<c:out value="${pg.dto.page}"/>">
-	<input type="hidden" name="amount" value="<c:out value="${pg.dto.amount}"/>">
-	<input type="hidden" name="type" value="<c:out value="${pg.dto.type}"/>">
-	<input type="hidden" name="keyword" value="<c:out value="${pg.dto.keyword}"/>">
+	<input type="hidden" name="page" value="${pg.dto.page}">
+	<input type="hidden" name="amount" value="${pg.dto.amount}">
+	<input type="hidden" name="type" value="${pg.dto.type}">
+	<input type="hidden" name="keyword" value="${pg.dto.keyword}">
 </form>
 
 	<script
@@ -121,7 +123,7 @@
 			$f1.append("<input type='hidden' name='bno' value='" + bnoValue +"'>");
 			
 			// 폼을 read페이지로 action을 통해 보낸다
-			$f1.attr("action", "/board/read");
+			$f1.attr("action", "/board/list");
 			
 			$f1.submit();
 		});
@@ -129,7 +131,14 @@
 		// Search 버튼 눌렀을 때 이벤트
 		$("#searchBtn").on("click", function(e) {
 			
-			$("input[name=page]").val(1);
+			$("input[name='page']").val(1);
+			
+			// stype 의 value를 hidden #type의 value로 저장
+			var $inputType = $("#stype option:selected").val();
+			$("input[name='type']").val($inputType);
+			
+			var $inputKeyword = $("#skeyword").val();
+			$("input[name='keyword']").val($inputKeyword);
 			
 			$f1.submit();
 			

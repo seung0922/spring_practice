@@ -41,6 +41,8 @@ public class BoardController {
 		log.info(pg);
 		
 		model.addAttribute("pg", pg);
+		// 글 조회할때 list 페이지에서 글이 위에 뜨게
+		model.addAttribute("result", service.findByBno(dto.getBno()));
 	}
 
 	@GetMapping("/register")
