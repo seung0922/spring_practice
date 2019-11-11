@@ -12,7 +12,7 @@
 		<property name="driverClassName"
 			value="com.mysql.cj.jdbc.Driver"></property>
 		<property name="jdbcUrl"
-			value="jdbc:mysql://localhost:3306/bitdb?serverTimezone=Asia/Seoul&amp;useSSL=false">
+			value="jdbc:mysql://10.10.10.149:3306/bitdb?serverTimezone=Asia/Seoul&amp;useSSL=false">
 		</property>
 		<property name="username" value="bit04"></property>
 		<property name="password" value="bit04"></property>
