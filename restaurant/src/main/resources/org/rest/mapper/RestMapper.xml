@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.rest.mapper.RestMapper">
+	<select id="getList" resultType="org.rest.domain.RestVO">
+		select rno, rname, lat, lng, category,
+		sqrt(power(lat-37.570444,2) + power(lng - 126.985320,2)) distance
+		from tbl_rest
+		order by distance
+		limit 0, 10
+	</select>
+</mapper>
