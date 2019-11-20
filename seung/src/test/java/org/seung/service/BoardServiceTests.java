@@ -26,7 +26,6 @@ public class BoardServiceTests {
 			vo.setTitle("title" + i);
 			vo.setContent("content" + i);
 			vo.setWriter("writer" + i);
-			log.info(service.register(vo));
 		}
 		
 	}

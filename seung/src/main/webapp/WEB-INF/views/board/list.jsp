@@ -380,9 +380,7 @@
 										<c:forEach var="board" items="${list}">
 											<tr>
 												<td><c:out value="${board.bno}" /></td>
-												<td><a
-													href="/board/read?bno=${board.bno}&page=${pg.dto.page}&amount=${pg.dto.amount}"><c:out
-															value="${board.title}" /></a></td>
+												<td><a class="bnoLink" href="<c:out value="${board.bno }"/>"><c:out value="${board.title }" /></a></td>
 												<td><c:out value="${board.writer}" /></td>
 												<td><c:out value="${board.regdate}" /></td>
 											</tr>
@@ -502,6 +500,21 @@
 
 				f1.submit();
 			});
+			
+			
+			$(".bnoLink").on("click", function(e) {
+				
+				e.preventDefault();
+				
+				var bnoValue = $(this).attr("href");
+				
+				f1.append("<input type='hidden' name='bno' value='" + bnoValue +"'>");
+				f1.attr("action", "/board/read");
+				
+				f1.submit();
+				
+			});
+			
 			
 			$("#searchBtn").on("click", function(e) {
 				$("input[name='page']").val(1);

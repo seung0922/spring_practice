@@ -436,7 +436,9 @@ div>h1 {
 						<%-- <input type="hidden" name="bno" value="${dto.bno }"> --%>
 						<input type="hidden" name="page" value="${dto.page }">
 						<input type="hidden" name="amount" value="${dto.amount }">
-						<input type="hidden" name="bno" value="${dto.bno }" >
+						<input type="hidden" id="bno" name="bno" value="${dto.bno }" >
+						<input type="hidden" name="keyword" value="${dto.keyword }" >
+						<input type="hidden" name="type" value="${dto.type }" >
 					</form>
 					<div class="btns">
 						<button class="btn btn-primary" style="width:100px" value="del">delete</button>
@@ -523,6 +525,7 @@ div>h1 {
 	$(document).ready(function(){
 		$(".btns button").on("click", function(){
 			if($(this).val() == 'list'){
+				$("#bno").remove();
 				f1.attr("action", "/board/list");
 			} 
 			if($(this).val() == 'del'){
@@ -531,6 +534,7 @@ div>h1 {
 			if($(this).val() == 'upd'){
 				f1.attr("action", "/board/update");
 			}
+			
 			f1.submit();
 		})
 		
