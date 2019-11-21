@@ -29,5 +29,12 @@ public class AttachMapperTests {
 		
 		mapper.insertAttach(vo);
 	}
+	
+	@Test
+	public void selectFileList() {
+		log.info("file........list..........");
+		
+		log.info(mapper.selectAttachList(234));
+	}
 
 }

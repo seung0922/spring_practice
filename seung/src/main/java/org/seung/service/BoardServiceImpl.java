@@ -2,6 +2,7 @@ package org.seung.service;
 
 import java.util.List;
 
+import org.seung.domain.BoardAttachVO;
 import org.seung.domain.BoardVO;
 import org.seung.dto.PageDTO;
 import org.seung.mapper.AttachMapper;
@@ -21,12 +22,14 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private AttachMapper attachMapper;
-
+	
 	@Override
 	@Transactional
 	public boolean register(BoardVO vo) {
 
 		log.info("register..................................");
+		
+		log.info(vo);
 
 		if (vo.getAttachList() == null || vo.getAttachList().size() <= 0) {
 
@@ -34,14 +37,15 @@ public class BoardServiceImpl implements BoardService {
 
 		}
 
+		boolean result = mapper.insert(vo) == 1 ? true : false;
+		
 		vo.getAttachList().forEach(attach -> {
-
-			attach.setBno(vo.getBno());
-
+			
 			attachMapper.insertAttach(attach);
 
 		});
-		return mapper.insert(vo) == 1 ? true : false;
+		
+		return result;
 	}
 
 	@Override
@@ -85,11 +89,12 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.getCount(dto);
 	}
 
-//	@Override
-//	public List<BoardVO> searchList(PageDTO dto) {
-//		log.info("search List..............");
-//		
-//		return mapper.searchList(dto);
-//	}
+	@Override
+	public List<BoardAttachVO> getAttachList(Integer bno) {
+		
+		log.info("get attach list..............");
+		
+		return attachMapper.selectAttachList(bno);
+	}
 
 }

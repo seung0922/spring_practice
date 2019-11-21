@@ -407,7 +407,7 @@
 								</ul>
 							</nav>
 						</div>
-						<button class="btn btn-primary col-sm-1"
+						<button class="btn btn-primary" style="width:100px;"
 						onclick="location.href='/board/register'">register</button>
 
 					<!-- Search form -->
@@ -420,7 +420,7 @@
 						</select>
 						<input class="form-control col-sm-5" type="text"
 							placeholder="Search" aria-label="Search" id="skeyword" value="${pg.dto.keyword}">
-						<button class="btn btn-primary col-sm-1" id="searchBtn">search</button>
+						<button class="btn btn-primary" id="searchBtn" style="width:100px;">search</button>
 					</div>
 
 					<form id="f1" method="get">

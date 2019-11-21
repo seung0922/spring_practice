@@ -48,7 +48,7 @@
 					data : formData,
 					type : 'POST',
 					success : function(result) {
-						alert("Uploaded");
+						console.log("success");
 					}
 				}); //$.ajax
 			});

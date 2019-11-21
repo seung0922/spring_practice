@@ -406,7 +406,7 @@
 									</div>
 
 									<div class="form-group">
-										<div class="col-sm-offset-2 col-sm-1">
+										<div class="col-sm-offset-2" style="width: 100px;">
 											<button id='uploadBtn' class="btn btn-primary">register</button>
 										</div>
 									</div>
@@ -486,9 +486,9 @@
 		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 		crossorigin="anonymous"></script>
 	<script>
-	var files = [];
 		$(document).ready(function() {
 
+			var idx = 0;
 			var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
 			var maxSize = 5242880; //5MB
 			function checkExtension(fileName, fileSize) {
@@ -503,64 +503,58 @@
 				return true;
 			}
 
-			var formData = null;
 			var $fn = $("#fileName");
-			/* var files = []; */
+			
 			
 			// 파일 변하면 목록 뿌려줌
 			$("input[type=file]").change(function() {
-				formData = new FormData();
+				var str = "";
+				var formData = new FormData();
+				
 				var inputFile = $("input[name='uploadFile']");
-				/* var len = files.length == 0 ? 0:files.length+1; */
 				var arr = inputFile[0].files;
 				
+				
 				for(let i=0; i<arr.length; i++) {
-					files.push(arr[i]);
+					formData.append("uploadFile", arr[i]);
+					str += "<li>" + arr[i].name + "</li>";
 				}
 				
-				console.log(files);
+				$fn.append(str);
 				
-				var str = "";
-
-				//add filedate to formdata
-				for (var i = 0; i < files.length; i++) {
-					formData.append("uploadFile", files[i]);
-					str += "<li>" + files[i].name + "</li>";
-				}
-				$fn.html(str);
-				
-				$("#uploadBtn").on("click", function(e) {
-					var $fileInfo =  $('.fileInfo');
-					var str2 = "";
-					$("#fileName li").each(function(i, obj) {
+				$.ajax({
+					url : '/uploadAjaxAction',
+					processData : false,
+					contentType : false,
+					data : formData,
+					type : 'POST',
+					dataType : 'json',
+					success : function(result) {
+						console.log(result);
+						console.log("Uploaded");
 						
-						var jobj = $(obj);
+						var $fileInfo =  $('.fileInfo');
+						var str2 = "";
 						
-						console.dir(jobj);
-						
-						str2 += "<input type='hidden' name='attachList["
-								+ i + "].fileName' value='" + files[i].name +"'>";
-						
-					});
-					
-					$fileInfo.append(str2);
-				
-					$.ajax({
-						url : '/uploadAjaxAction',
-						processData : false,
-						contentType : false,
-						data : formData,
-						type : 'POST',
-						dataType : 'json',
-						success : function(result) {
-							console.log("Uploaded");
-							
+						for(i=0; i<result.length; i++) {
+							str2 += "<input type='hidden' name='attachList["
+									+ idx + "].fileName' value='" + result[i].fileName + "'>";
+							str2 += "<input type='hidden' name='attachList["
+									+ idx + "].uuid' value='" + result[i].uuid + "'>";
+							str2 += "<input type='hidden' name='attachList["
+									+ idx + "].uploadPath' value='" + result[i].uploadPath + "'>";
+							str2 += "<input type='hidden' name='attachList["
+									+ idx + "].fileType' value='" + result[i].fileType + "'>";
+							idx++;
 						}
-					}); //$.ajax
-				});
+						
+						$fileInfo.append(str2);
+						
+					}
+				}); //$.ajax
+				
 			})
 			
-			// register 누르면 파일이름 히든으로 생성
 		});
 	</script>
 

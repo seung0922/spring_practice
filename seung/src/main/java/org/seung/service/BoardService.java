@@ -2,6 +2,7 @@ package org.seung.service;
 
 import java.util.List;
 
+import org.seung.domain.BoardAttachVO;
 import org.seung.domain.BoardVO;
 import org.seung.dto.PageDTO;
 
@@ -19,5 +20,5 @@ public interface BoardService {
 	
 	public int getCount(PageDTO dto);
 	
-//	public List<BoardVO> searchList(PageDTO dto);
+	public List<BoardAttachVO> getAttachList(Integer bno);
 }

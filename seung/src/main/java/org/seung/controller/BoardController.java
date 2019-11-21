@@ -1,7 +1,11 @@
 package org.seung.controller;
 
+import java.util.Arrays;
+import java.util.UUID;
+
 import javax.validation.Valid;
 
+import org.seung.domain.BoardAttachVO;
 import org.seung.domain.BoardVO;
 import org.seung.dto.PageDTO;
 import org.seung.dto.PageMaker;
@@ -36,7 +40,7 @@ public class BoardController {
 
 		log.info("post register......................");
 		log.info(vo);
-
+		
 		service.register(vo);
 
 		return "redirect:/board/list";
@@ -60,10 +64,11 @@ public class BoardController {
 	}
 
 	@GetMapping("/read")
-	public void readGET(@ModelAttribute("dto") PageDTO dto, Model model) {
+	public void readGET(@ModelAttribute("dto") PageDTO dto,	Model model) {
 		log.info("read get...................");
 
 		model.addAttribute("result", service.selectByBno(dto.getBno()));
+		model.addAttribute("fileList", service.getAttachList(dto.getBno()));
 	}
 
 	@GetMapping("/delete")

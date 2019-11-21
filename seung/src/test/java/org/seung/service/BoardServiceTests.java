@@ -36,6 +36,13 @@ public class BoardServiceTests {
 		log.info(service.delete(3));
 	}
 	
+	@Test
+	public void selectAttachTests() {
+		
+		log.info(service.getAttachList(234));
+		
+	}
+	
 //	@Test
 //	public void searchListTests() {
 //		PageDTO dto = new PageDTO();

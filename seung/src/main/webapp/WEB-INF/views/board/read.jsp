@@ -425,25 +425,45 @@ div>h1 {
 											name="mem_wrtier" placeholder="wirter">
 									</div>
 								</div>
-
+								
+								<div class="form-group">
+									<label for="inputEmail3" class="col-sm-1 control-label">File</label>
+									<div class="col-sm-10">
+										<ul id="upload">
+										<c:forEach var="file" items="${fileList}">
+											<li>
+												<a href="/download?uploadPath=${file.uploadPath}&fileName=${file.fileName}&uuid=${file.uuid}">
+												<c:out value="${file.fileName }"/></a>
+											</li>
+											<%-- <form id="un" action="/download" method="get">
+												<li><a href="#"><c:out value="${file.fileName }"/></a></li>
+												<input type="hidden" name="uploadPath" value="${file.uploadPath }">
+												<input type="hidden" name="fileName" value="${file.fileName }">
+												<input type="hidden" name="uuid" value="${file.uuid }">
+											</form> --%>
+										</c:forEach>
+										</ul>
+									</div>
+								</div>
+								
 								<!-- 여기까지 그거 -->
-
+								
 							</div>
 						</div>
 					</div>
 					
+					
 					<form id="f1" method="get">
-						<%-- <input type="hidden" name="bno" value="${dto.bno }"> --%>
 						<input type="hidden" name="page" value="${dto.page }">
 						<input type="hidden" name="amount" value="${dto.amount }">
 						<input type="hidden" id="bno" name="bno" value="${dto.bno }" >
 						<input type="hidden" name="keyword" value="${dto.keyword }" >
 						<input type="hidden" name="type" value="${dto.type }" >
 					</form>
+					
 					<div class="btns">
 						<button class="btn btn-primary" style="width:100px" value="del">delete</button>
 						<button class="btn btn-primary" style="width:100px" value="upd">Update</button>
-						<%-- <button class="btn btn-primary" style="width:100px" onclick="location.href='/board/update?bno=${result.bno}'">Update</button> --%>
 						<button class="btn btn-primary" style="width:100px; float:right;" value="list">List</button>
 					</div>
 
@@ -520,9 +540,18 @@ div>h1 {
 	<script>
 	
 	var f1 = $("#f1");
+	var un = $("#un");
 	var $bno = ${param.bno }
 	
 	$(document).ready(function(){
+		
+		/* $("#upload li").on("click", function(e) {
+			e.preventDefault();
+			
+			$(this).parent().submit();
+		}); */
+		
+		
 		$(".btns button").on("click", function(){
 			if($(this).val() == 'list'){
 				$("#bno").remove();
