@@ -36,5 +36,12 @@ public class AttachMapperTests {
 		
 		log.info(mapper.selectAttachList(234));
 	}
+	
+	@Test
+	public void selectImgTest() {
+		log.info("img...........................");
+		
+		log.info(mapper.selectImg("3a5c83a4-f904-4efa-9733-98199ba95f86_cat.jfif", 282));
+	}
 
 }

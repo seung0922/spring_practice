@@ -12,7 +12,7 @@
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <title>SB Admin 2 - Tables</title>
 
 <!-- Custom fonts for this template -->
@@ -486,9 +486,55 @@
 		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
 		crossorigin="anonymous"></script>
 	<script>
-		$(document).ready(function() {
+	/* 
+	$("#uploadBtn").on("click", function () {
+		
+		$(".form-horizontal").summit();
+	}); */
 
-			var idx = 0;
+		var $fileInfo =  $('.fileInfo');
+		var rarr = null;
+		$(document).ready(function() {
+			
+			var formData = null;
+			formData = new FormData();
+			
+			var $fn = $("#fileName");
+			
+			$('#fileName').on("click", "button" , function() {
+			    $(this).parent().remove();
+
+			    var targetFile = $(this).data("file");
+			    var type = $(this).data("type");
+			    var path = $(this).data("path");
+			    
+			    
+			    $.ajax({
+			    	url: '/deleteFile',
+			    	data: {fileName   : targetFile,
+			    		   type       : type,
+			    		   uploadPath : path},
+			    	dataType : "json",
+			    	type : "POST",
+			    	success: function(result){
+			    		
+			    	}
+			    })
+			})
+
+
+			
+			
+			
+			$('#fileName').on("click", "button" , function() {
+			    	var a = $(this).parent().text();
+			    	$('input[value="'+ a +'"]').parent().remove();
+			})
+			
+			
+			
+			
+			
 			var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
 			var maxSize = 5242880; //5MB
 			function checkExtension(fileName, fileSize) {
@@ -503,13 +549,9 @@
 				return true;
 			}
 
-			var $fn = $("#fileName");
-			
 			
 			// 파일 변하면 목록 뿌려줌
 			$("input[type=file]").change(function() {
-				var str = "";
-				var formData = new FormData();
 				
 				var inputFile = $("input[name='uploadFile']");
 				var arr = inputFile[0].files;
@@ -517,10 +559,7 @@
 				
 				for(let i=0; i<arr.length; i++) {
 					formData.append("uploadFile", arr[i]);
-					str += "<li>" + arr[i].name + "</li>";
 				}
-				
-				$fn.append(str);
 				
 				$.ajax({
 					url : '/uploadAjaxAction',
@@ -530,31 +569,57 @@
 					type : 'POST',
 					dataType : 'json',
 					success : function(result) {
+						rarr = result;
 						console.log(result);
 						console.log("Uploaded");
 						
-						var $fileInfo =  $('.fileInfo');
-						var str2 = "";
+						/* var $fileInfo =  $('.fileInfo'); */
+						var str = "";	// hidden 태그 넣기위한 변수
+						var str2 = "";	// 파일목록 출력하기 위한 변수
 						
 						for(i=0; i<result.length; i++) {
-							str2 += "<input type='hidden' name='attachList["
-									+ idx + "].fileName' value='" + result[i].fileName + "'>";
-							str2 += "<input type='hidden' name='attachList["
-									+ idx + "].uuid' value='" + result[i].uuid + "'>";
-							str2 += "<input type='hidden' name='attachList["
-									+ idx + "].uploadPath' value='" + result[i].uploadPath + "'>";
-							str2 += "<input type='hidden' name='attachList["
-									+ idx + "].fileType' value='" + result[i].fileType + "'>";
-							idx++;
+							
+							// 히든 태그 추가
+							str2 += "<div id='"+ result[i].fileName +"'>";
+							str2 += "<input type='text' name='attachList["
+									+ i + "].fileName' value='" + result[i].fileName + "'>";
+							str2 += "<input type='text' name='attachList["
+									+ i + "].uuid' value='" + result[i].uuid + "'>";
+							str2 += "<input type='text' name='attachList["
+									+ i + "].uploadPath' value='" + result[i].uploadPath + "'>";
+							str2 += "<input type='text' name='attachList["
+									+ i + "].fileType' value='" + result[i].fileType + "'>";
+							str2 += "</div>";
+									
+							// 파일 목록 추가
+							var fType = result[i].fileType;
+							var dFile = "";
+							
+							str += "<li>";
+							
+							if(result[i].fileType) {	// img 일때
+								dFile = "s_" + result[i].uuid + "_" + result[i].fileName
+								str += "<img src='/viewFile?fname=s_" + result[i].uuid + "_" 
+										+ result[i].fileName + "&uploadPath=" + result[i].uploadPath + "'/>";
+							} else {
+								dFile = result[i].uuid + "_" + result[i].fileName
+							}
+							
+							str += result[i].fileName 
+									+ "<button type='button' data-path='" + result[i].uploadPath
+									+ "' data-file='" + dFile + "' data-type='" + fType 
+									+ "' style='background-color:white; border-style:none;'>"
+									+"<i class='fa fa-close' style='margin-left:10px; color:deeppink'></i></button>"
+									+ "</li>";
 						}
 						
-						$fileInfo.append(str2);
+						$fn.html(str);
+						$fileInfo.html(str2);
 						
 					}
 				}); //$.ajax
 				
 			})
-			
 		});
 	</script>
 

@@ -9,4 +9,6 @@ public interface AttachMapper {
 	public int insertAttach(BoardAttachVO vo);
 	
 	public List<BoardAttachVO> selectAttachList(Integer bno);
+	
+	public String selectImg(String fname, Integer bno);
 }

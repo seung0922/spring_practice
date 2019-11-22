@@ -16,4 +16,10 @@ from tbl_attach
 where bno = #{bno}
 </select>
 
+ <select id="selectImg" resultType="String">
+select uploadPath from tbl_attach
+where bno = #{bno}
+and concat(uuid, "_" ,fileName) = #{fname}
+</select>
+
 </mapper>

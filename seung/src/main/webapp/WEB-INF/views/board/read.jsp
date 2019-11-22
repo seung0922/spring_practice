@@ -432,15 +432,12 @@ div>h1 {
 										<ul id="upload">
 										<c:forEach var="file" items="${fileList}">
 											<li>
+												<c:if test="${file.fileType}">
+													<img alt="error" src="/viewFile?fname=s_${file.uuid}_${file.fileName}&uploadPath=${file.uploadPath}">
+												</c:if>
 												<a href="/download?uploadPath=${file.uploadPath}&fileName=${file.fileName}&uuid=${file.uuid}">
 												<c:out value="${file.fileName }"/></a>
 											</li>
-											<%-- <form id="un" action="/download" method="get">
-												<li><a href="#"><c:out value="${file.fileName }"/></a></li>
-												<input type="hidden" name="uploadPath" value="${file.uploadPath }">
-												<input type="hidden" name="fileName" value="${file.fileName }">
-												<input type="hidden" name="uuid" value="${file.uuid }">
-											</form> --%>
 										</c:forEach>
 										</ul>
 									</div>
@@ -544,13 +541,6 @@ div>h1 {
 	var $bno = ${param.bno }
 	
 	$(document).ready(function(){
-		
-		/* $("#upload li").on("click", function(e) {
-			e.preventDefault();
-			
-			$(this).parent().submit();
-		}); */
-		
 		
 		$(".btns button").on("click", function(){
 			if($(this).val() == 'list'){
