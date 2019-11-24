@@ -1,14 +1,11 @@
 package org.seung.controller;
 
-import java.util.Arrays;
-import java.util.UUID;
-
 import javax.validation.Valid;
 
-import org.seung.domain.BoardAttachVO;
 import org.seung.domain.BoardVO;
 import org.seung.dto.PageDTO;
 import org.seung.dto.PageMaker;
+import org.seung.service.AttachService;
 import org.seung.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,7 +25,10 @@ import lombok.extern.log4j.Log4j;
 public class BoardController {
 
 	@Autowired
-	private BoardService service;
+	private BoardService boardService;
+	
+	@Autowired
+	private AttachService attachService;
 
 	@GetMapping("/register")
 	public void registerGET() {
@@ -41,7 +41,7 @@ public class BoardController {
 		log.info("post register......................");
 		log.info(vo);
 		
-		service.register(vo);
+		boardService.register(vo);
 
 		return "redirect:/board/list";
 
@@ -52,14 +52,14 @@ public class BoardController {
 
 		log.info("list get................");
 
-		int total = service.getCount(dto);
+		int total = boardService.getCount(dto);
 
 		PageMaker pg = new PageMaker(total, dto);
 
 		log.info(pg);
 
 		model.addAttribute("pg", pg);
-		model.addAttribute("list", service.getList(dto));
+		model.addAttribute("list", boardService.getList(dto));
 
 	}
 
@@ -67,15 +67,15 @@ public class BoardController {
 	public void readGET(@ModelAttribute("dto") PageDTO dto,	Model model) {
 		log.info("read get...................");
 
-		model.addAttribute("result", service.selectByBno(dto.getBno()));
-		model.addAttribute("fileList", service.getAttachList(dto.getBno()));
+		model.addAttribute("result", boardService.selectByBno(dto.getBno()));
+		model.addAttribute("fileList", attachService.getAttachList(dto.getBno()));
 	}
 
 	@GetMapping("/delete")
 	public String deleteGET(RedirectAttributes rttr, PageDTO dto, Model model) {
 		log.info("delete get.............");
 
-		service.delete(dto.getBno());
+		boardService.delete(dto.getBno());
 
 		rttr.addAttribute("page", dto.getPage());
 		rttr.addAttribute("amount", dto.getAmount());
@@ -88,16 +88,18 @@ public class BoardController {
 
 		log.info("update get.......................");
 
-		model.addAttribute("result", service.selectByBno(dto.getBno()));
+		model.addAttribute("result", boardService.selectByBno(dto.getBno()));
+		model.addAttribute("fileList", attachService.getAttachList(dto.getBno()));
 	}
 
 	@PostMapping("/update")
 	public String updatePOST(RedirectAttributes rttr, PageDTO dto, BoardVO vo) {
 
 		log.info("update post.......................");
+		log.info(vo);
 
-		log.info(service.update(vo));
-
+		log.info(boardService.update(vo));
+		
 		log.info(dto);
 
 		rttr.addAttribute("bno", dto.getBno());
@@ -108,5 +110,6 @@ public class BoardController {
 
 		return "redirect:/board/read";
 	}
+	
 
 }

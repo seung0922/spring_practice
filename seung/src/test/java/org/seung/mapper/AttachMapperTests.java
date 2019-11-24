@@ -31,17 +31,16 @@ public class AttachMapperTests {
 	}
 	
 	@Test
-	public void selectFileList() {
+	public void selectFileListTest() {
 		log.info("file........list..........");
 		
 		log.info(mapper.selectAttachList(234));
 	}
-	
-	@Test
-	public void selectImgTest() {
-		log.info("img...........................");
-		
-		log.info(mapper.selectImg("3a5c83a4-f904-4efa-9733-98199ba95f86_cat.jfif", 282));
-	}
 
+	@Test
+	public void deleteFileTest() {
+		log.info("del file................");
+		
+		log.info(mapper.deleteFile("362e9bec-7e55-4369-a0f4-cbd16e4b967c"));
+	}
 }

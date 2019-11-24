@@ -2,7 +2,6 @@ package org.seung.service;
 
 import java.util.List;
 
-import org.seung.domain.BoardAttachVO;
 import org.seung.domain.BoardVO;
 import org.seung.dto.PageDTO;
 import org.seung.mapper.AttachMapper;
@@ -75,10 +74,41 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public boolean update(BoardVO vo) {
+		
+		log.info("update...................");
+		
+		log.info(vo.getDelFileName());
 
-		log.info("update....................");
+		// 추가된 파일이 없고, 삭제된 파일이 없을 때
+		if ( (vo.getAttachList() == null || vo.getAttachList().size() <= 0) 
+				&& (vo.getDelFileName() == null || vo.getDelFileName().length == 0) ) { 
 
-		return mapper.update(vo);
+			return mapper.update(vo);
+
+		}
+
+		// 내용 업데이트 하고 
+		boolean result = mapper.update(vo);
+		
+		// 파일 추가하고
+		vo.getAttachList().forEach(attach -> {
+			
+			attachMapper.insertAttach(attach);
+
+		});
+		
+		// 파일 삭제하고
+		for(int i=0; i<vo.getDelFileName().length; i++) {
+			
+			int idx = vo.getDelFileName()[i].indexOf("_");
+			String uuid = vo.getDelFileName()[i].substring(0, idx);
+			
+			log.info("uuid : " + uuid);
+			
+			log.info(attachMapper.deleteFile(uuid));
+		}
+		
+		return result;
 	}
 
 	@Override
@@ -89,12 +119,6 @@ public class BoardServiceImpl implements BoardService {
 		return mapper.getCount(dto);
 	}
 
-	@Override
-	public List<BoardAttachVO> getAttachList(Integer bno) {
-		
-		log.info("get attach list..............");
-		
-		return attachMapper.selectAttachList(bno);
-	}
+	
 
 }

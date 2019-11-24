@@ -22,4 +22,9 @@ where bno = #{bno}
 and concat(uuid, "_" ,fileName) = #{fname}
 </select>
 
+<delete id="deleteFile">
+delete from tbl_attach
+where uuid = #{uuid}
+</delete>
+
 </mapper>

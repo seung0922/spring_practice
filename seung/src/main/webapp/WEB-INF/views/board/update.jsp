@@ -23,6 +23,18 @@
 
   <!-- Custom styles for this page -->
   <link href="../../resources/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+#fileName button {
+	background-color:white;
+	border-style:none;
+}
+
+#fileName i {
+	margin-left:10px;
+	color: deeppink;
+}
+</style>
 
 </head>
 
@@ -369,10 +381,50 @@
 						</div>
 						
 						<div class="form-group">
+							<label for="inputEmail3" class="col-sm-2 control-label">File</label>
+							<div class="col-sm-10">
+								<div class='uploadDiv'>
+									<input type='file' name='uploadFile' multiple>
+								</div>
+							</div>
 						</div>
-						<button class="btn btn-primary">update</button>
+						
+						<!-- 파일 목록 -->
+						<div class="col-sm-10">
+							<ul id="fileName">
+							<c:forEach var="file" items="${fileList}">
+								<li>
+									<c:if test="${file.fileType}">
+										<img alt="error" src="/viewFile?fname=s_${file.uuid}_${file.fileName}&uploadPath=${file.uploadPath}">
+									</c:if>
+									<c:out value="${file.fileName }"/>
+									<c:if test="${file.fileType}">
+										<button type='button' data-path='${file.uploadPath }' data-type='${file.fileType}' data-file='s_${file.uuid}_${file.fileName}'>
+									</c:if>
+									<button type='button' data-path='${file.uploadPath }' data-type='${file.fileType}' data-file='${file.uuid}_${file.fileName}'>
+									<i class='fa fa-close'></i></button>
+								</li>
+							</c:forEach>
+							</ul>
+						</div>
+						
+						<div class="form-group">
+						</div>
+						<button id="updateBtn" class="btn btn-primary">update</button>
 						
 						<input id="cancel" type="button" value="cancel" class="btn btn-primary">
+						
+						
+						<!-- 추가할 파일 목록 -->
+						<div id="fileInfo">
+						
+						</div>
+						
+						<!-- 삭제할 파일 목록 -->
+						<div id="delFile">
+						
+						</div>
+						
 					</form> 
 					
 					<form id="f1" action="/board/read" method="get">
@@ -437,17 +489,142 @@
   crossorigin="anonymous"></script>
   
   <script>
-  	
-  	$(document).ready(function() {
-  		
-  		var $f1 = $('#f1');
-  		
-  		$("#cancel").on("click", function() {
-  			f1.submit();
-  		});
-  		
-  	});
-  </script>
+		
+		$(document).ready(function() {
+			
+			var $fn = $("#fileName");
+			var $fileInfo =  $('#fileInfo');
+			var realResult = [];
+			
+			// 파일 상태가 변하면 목록 뿌려줌
+			$("input[type=file]").change(function() {
+				var formData = new FormData();
+				
+				var inputFile = $("input[name='uploadFile']");
+				var arr = inputFile[0].files;
+				
+				
+				for(let i=0; i<arr.length; i++) {
+					formData.append("uploadFile", arr[i]);
+				}
+				
+				$.ajax({
+					url : '/uploadAjaxAction',
+					processData : false,
+					contentType : false,
+					data : formData,
+					type : 'POST',
+					dataType : 'json',
+					success : function(result) {
+						
+						// 들어온 값 배열에 더해줌
+						realResult = realResult.concat(result);
+						
+						console.log(realResult);
+						console.log("Uploaded");
+						
+						var str = "";
+						
+						// 파일 업로드 성공하면 목록 리스트 뿌려줘라
+						for(let i=0; i<result.length; i++) {
+							
+							// 파일 목록 추가
+							var fType = result[i].fileType;
+							var dFile = "";
+							
+							str += "<li>";
+							
+							if(result[i].fileType) {	// img 일때
+								dFile = "s_" + result[i].uuid + "_" + result[i].fileName
+								str += "<img src='/viewFile?fname=s_" + result[i].uuid + "_" 
+										+ result[i].fileName + "&uploadPath=" + result[i].uploadPath + "'/>";
+							} else {	// img 아닐 때
+								dFile = result[i].uuid + "_" + result[i].fileName
+							}
+							
+							str += result[i].fileName
+								+ "<button type='button' data-path='" + result[i].uploadPath
+								+ "' data-file='" + dFile + "' data-type='" + fType
+								+ "' data-uuid='" + result[i].uuid
+								+ "'><i class='fa fa-close'></i></button>"
+								+ "</li>";
+							
+						} // end of for
+						
+						$fn.append(str);
+						
+					} // end of success
+					
+				}); //$.ajax 파일 업로드
+				
+			}); // end of file change
+			
+			
+			// x 아이콘 눌렀을 때 목록에서 삭제하고 파일 삭제까지
+			$fn.on("click", "button" , function() {
+				
+				var targetLi = $(this).parent();
+			    var targetFile = $(this).data("file");
+			    var type = $(this).data("type");
+			    var path = $(this).data("path");
+			    
+		        var idx = $('#fileName li button').index(this);
+				
+				$.ajax({
+			    	url: '/deleteFile',
+			    	data: {fileName   : targetFile,
+			    		   type       : type,
+			    		   uploadPath : path},
+			    	dataType : 'text',
+			    	type : 'post',
+			    	success: function(result){
+			    		console.log(result);
+			    		
+			    		console.log("idx: " + idx);
+			    		
+			    		realResult.splice(idx, 1);
+			    		targetLi.remove(); // 목록에서 지움
+			    		
+			    	},
+			    	error: function(request,status,error) {
+			    		console.log("code = "+ request.status + " message = " + request.responseText + " error = " + error);
+			    	}
+			    		   
+			    }) // $.ajax 파일 삭제
+			    
+			}); // end of x button click
+			
+			
+			// register 버튼 클릭 시 이벤트
+			$('#updateBtn').on("click", function(e) {
+				
+				e.preventDefault();
+				
+				console.log(realResult.length);
+				
+				var hiddenStr = "";
+				
+				for(let i=0; i<realResult.length; i++) {
+					
+					// 히든 태그 추가
+					hiddenStr += "<input type='text' name='attachList["
+							+ i + "].fileName' value='" + realResult[i].fileName + "'>";
+					hiddenStr += "<input type='text' name='attachList["
+							+ i + "].uuid' value='" + realResult[i].uuid + "'>";
+					hiddenStr += "<input type='text' name='attachList["
+							+ i + "].uploadPath' value='" + realResult[i].uploadPath + "'>";
+					hiddenStr += "<input type='text' name='attachList["
+							+ i + "].fileType' value='" + realResult[i].fileType + "'>";
+				}
+				
+				$fileInfo.html(hiddenStr);
+				
+				//$('.form-horizontal').submit();
+				
+			});	// end of register click
+				
+		});
+	</script>
 
   <!-- Bootstrap core JavaScript-->
   <script src="../../resources/vendor/jquery/jquery.min.js"></script>

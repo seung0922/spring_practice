@@ -3,7 +3,6 @@ package org.seung.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,7 +11,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.seung.domain.BoardAttachVO;
+import org.seung.service.AttachService;
 import org.seung.util.PathUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +32,9 @@ import net.coobird.thumbnailator.Thumbnailator;
 @Log4j
 public class UploadController {
 
+	@Autowired
+	private AttachService attachService;
+	
 	private PathUtil pathUtil = new PathUtil();
 
 	private String getFolder() {
@@ -201,6 +205,7 @@ public class UploadController {
 	public ResponseEntity<String> deleteFile(String uploadPath, String fileName, boolean type){
 		
 		log.info("deleteFile : " + fileName);
+		log.info("type: " + type);
 		
 		File file;
 		
@@ -215,18 +220,20 @@ public class UploadController {
 			if(type) {
 				String largeFileName = file.getAbsolutePath().replace("s_", "");
 				
-				log.info("lageFileName: " + largeFileName);
+				log.info("largeFileName: " + largeFileName);
 				
 				file = new File(largeFileName);
 				
 				file.delete();
 			}
+			
 		} catch(Exception e){
 			e.printStackTrace();
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
+		log.info("aa");
 		return new ResponseEntity<String>("deleted", HttpStatus.OK);
 	}
-
+	
 }

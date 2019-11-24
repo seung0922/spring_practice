@@ -15,4 +15,6 @@ public class BoardVO {
 	
 	private List<BoardAttachVO> attachList;
 	
+	private String[] delFileName;
+	
 }
