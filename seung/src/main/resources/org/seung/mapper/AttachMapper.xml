@@ -10,6 +10,11 @@ insert into tbl_attach (uuid, uploadPath, fileName, filetype, bno)
 values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, last_insert_id())
 </insert>
 
+<insert id="updateAttach">
+insert into tbl_attach (uuid, uploadPath, fileName, filetype, bno)
+values (#{uuid}, #{uploadPath}, #{fileName}, #{fileType}, #{bno})
+</insert>
+
 <select id="selectAttachList" resultType="org.seung.domain.BoardAttachVO">
 select *
 from tbl_attach

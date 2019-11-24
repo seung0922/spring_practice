@@ -34,4 +34,10 @@ public class AttachServiceImpl implements AttachService {
 		return attachMapper.deleteFile(uuid) == 1 ? true : false;
 	}
 
+	@Override
+	public int updateAttach(BoardAttachVO vo) {
+		log.info("update........file..............");
+		return 0;
+	}
+
 }

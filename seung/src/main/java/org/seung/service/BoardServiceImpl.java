@@ -73,39 +73,69 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional
 	public boolean update(BoardVO vo) {
 		
 		log.info("update...................");
+		log.info(vo);
 		
-		log.info(vo.getDelFileName());
-
-		// 추가된 파일이 없고, 삭제된 파일이 없을 때
+		// 1. 추가된 파일이 없고, 삭제할 파일 없을 때
 		if ( (vo.getAttachList() == null || vo.getAttachList().size() <= 0) 
-				&& (vo.getDelFileName() == null || vo.getDelFileName().length == 0) ) { 
-
+				&& (vo.getDelFileName() == null || vo.getDelFileName().length <= 0)) { 
+			// 내용만 변경해줌
 			return mapper.update(vo);
-
 		}
+		
+		// 2. 추가된 파일 없는데, 삭제할 파일은 있을 때
+		if (vo.getAttachList() == null || vo.getAttachList().size() <= 0) { 
+			// 내용 변경해주고
+			boolean result = mapper.update(vo);
+			
+			// 파일 삭제해줌
+			for(int i=0; i<vo.getDelFileName().length; i++) {
+				
+				log.info("uuid : " + vo.getDelFileName()[i]);
+				
+				log.info(attachMapper.deleteFile(vo.getDelFileName()[i]));
+			}
+			
+			return result;
+		}
+		
+		// 3. 추가된 파일 있고, 삭제할 파일 없을 때
+		if (vo.getDelFileName() == null || vo.getDelFileName().length <= 0) {
+			// 내용 업데이트 하고 
+			boolean result = mapper.update(vo);
+			
+			// 파일 추가하고
+			vo.getAttachList().forEach(attach -> {
+				
+				attach.setBno(vo.getBno());
+				attachMapper.updateAttach(attach);
 
+			});
+			
+			return result;
+		}
+		
+		// 4. 추가된 파일 있고, 삭제할 파일 있을 때
 		// 내용 업데이트 하고 
 		boolean result = mapper.update(vo);
 		
 		// 파일 추가하고
 		vo.getAttachList().forEach(attach -> {
 			
-			attachMapper.insertAttach(attach);
+			attach.setBno(vo.getBno());
+			attachMapper.updateAttach(attach);
 
 		});
 		
 		// 파일 삭제하고
 		for(int i=0; i<vo.getDelFileName().length; i++) {
 			
-			int idx = vo.getDelFileName()[i].indexOf("_");
-			String uuid = vo.getDelFileName()[i].substring(0, idx);
+			log.info("uuid : " + vo.getDelFileName()[i]);
 			
-			log.info("uuid : " + uuid);
-			
-			log.info(attachMapper.deleteFile(uuid));
+			log.info(attachMapper.deleteFile(vo.getDelFileName()[i]));
 		}
 		
 		return result;

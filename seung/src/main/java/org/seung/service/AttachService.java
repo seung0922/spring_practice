@@ -8,6 +8,8 @@ public interface AttachService {
 	
 	public boolean insertAttach(BoardAttachVO vo);
 	
+	public int updateAttach(BoardAttachVO vo);
+	
 	public List<BoardAttachVO> getAttachList(Integer bno);
 	
 	public boolean deleteFile(String uuid);

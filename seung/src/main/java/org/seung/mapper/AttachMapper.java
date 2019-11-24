@@ -8,6 +8,8 @@ public interface AttachMapper {
 
 	public int insertAttach(BoardAttachVO vo);
 	
+	public int updateAttach(BoardAttachVO vo);
+	
 	public List<BoardAttachVO> selectAttachList(Integer bno);
 	
 	public int deleteFile(String uuid);

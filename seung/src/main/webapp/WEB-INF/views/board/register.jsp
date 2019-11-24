@@ -573,6 +573,7 @@
 			$fn.on("click", "button" , function() {
 				
 				var targetLi = $(this).parent();
+				
 			    var targetFile = $(this).data("file");
 			    var type = $(this).data("type");
 			    var path = $(this).data("path");
@@ -593,6 +594,7 @@
 			    		console.log("idx: " + idx);
 			    		console.log("targetuuid: " + targetUuid);
 			    		
+			    		// 선택한 파일의 uuid로 x 클릭된 것 걸러줌
 			    		realResult = realResult.filter(function(item){    
 			    			  return item.uuid !== targetUuid;
 			    			});
@@ -635,7 +637,7 @@
 				
 				$fileInfo.html(hiddenStr);
 				
-				// $('.form-horizontal').submit();
+				$('.form-horizontal').submit();
 				
 			});	// end of register click
 				

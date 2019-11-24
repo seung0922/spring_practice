@@ -399,9 +399,11 @@
 									</c:if>
 									<c:out value="${file.fileName }"/>
 									<c:if test="${file.fileType}">
-										<button type='button' data-path='${file.uploadPath }' data-type='${file.fileType}' data-file='s_${file.uuid}_${file.fileName}'>
+										<button type='button' data-path='${file.uploadPath }' data-type='${file.fileType}' data-file='s_${file.uuid}_${file.fileName}'
+										data-uuid='${file.uuid }'>
 									</c:if>
-									<button type='button' data-path='${file.uploadPath }' data-type='${file.fileType}' data-file='${file.uuid}_${file.fileName}'>
+									<button type='button' data-path='${file.uploadPath }' data-type='${file.fileType}' data-file='${file.uuid}_${file.fileName}'
+									data-uuid='${file.uuid }'>
 									<i class='fa fa-close'></i></button>
 								</li>
 							</c:forEach>
@@ -494,7 +496,9 @@
 			
 			var $fn = $("#fileName");
 			var $fileInfo =  $('#fileInfo');
-			var realResult = [];
+			
+			var realResult = [];	// 새로 추가되는 파일 목록
+			var delArr = [];		// 기존에서 삭제할 파일의 uuid 목록 (uuid만 보내서 삭제할거임)
 			
 			// 파일 상태가 변하면 목록 뿌려줌
 			$("input[type=file]").change(function() {
@@ -502,7 +506,6 @@
 				
 				var inputFile = $("input[name='uploadFile']");
 				var arr = inputFile[0].files;
-				
 				
 				for(let i=0; i<arr.length; i++) {
 					formData.append("uploadFile", arr[i]);
@@ -534,17 +537,17 @@
 							
 							str += "<li>";
 							
-							if(result[i].fileType) {	// img 일때
+							if(result[i].fileType) { // img 일때
 								dFile = "s_" + result[i].uuid + "_" + result[i].fileName
 								str += "<img src='/viewFile?fname=s_" + result[i].uuid + "_" 
 										+ result[i].fileName + "&uploadPath=" + result[i].uploadPath + "'/>";
-							} else {	// img 아닐 때
+							} else { // img 아닐 때
 								dFile = result[i].uuid + "_" + result[i].fileName
 							}
 							
 							str += result[i].fileName
 								+ "<button type='button' data-path='" + result[i].uploadPath
-								+ "' data-file='" + dFile + "' data-type='" + fType
+								+ "' data-file='" + dFile + "' data-type='" + fType 
 								+ "' data-uuid='" + result[i].uuid
 								+ "'><i class='fa fa-close'></i></button>"
 								+ "</li>";
@@ -564,12 +567,12 @@
 			$fn.on("click", "button" , function() {
 				
 				var targetLi = $(this).parent();
+				
 			    var targetFile = $(this).data("file");
 			    var type = $(this).data("type");
 			    var path = $(this).data("path");
+			    var targetUuid = $(this).data("uuid");
 			    
-		        var idx = $('#fileName li button').index(this);
-				
 				$.ajax({
 			    	url: '/deleteFile',
 			    	data: {fileName   : targetFile,
@@ -580,9 +583,25 @@
 			    	success: function(result){
 			    		console.log(result);
 			    		
-			    		console.log("idx: " + idx);
+			    		console.log("targetuuid: " + targetUuid);
 			    		
-			    		realResult.splice(idx, 1);
+			    		// 새로 선택된게 아니라 기존의 거 삭제할 파일 uuid 저장
+			    		// 현재 선택된 파일의 uuid가 새로 추가된 파일의 uuid 해당되는게 없으면 기존의 파일이므로
+			    		// 기존 파일에서 삭제되어야함
+			    		var tmpArr = realResult.filter(function(item){    
+			    			  return item.uuid === targetUuid;
+			    			});
+			    		if(tmpArr === null || tmpArr.length === 0) {
+			    			delArr.push(targetUuid);
+			    		}
+			    		
+			    		// 선택한 파일의 uuid로 x 클릭된 것 걸러줌
+			    		realResult = realResult.filter(function(item){    
+			    			  return item.uuid !== targetUuid;
+			    			});
+			    		
+			    		console.log(realResult);
+			    		
 			    		targetLi.remove(); // 목록에서 지움
 			    		
 			    	},
@@ -600,8 +619,7 @@
 				
 				e.preventDefault();
 				
-				console.log(realResult.length);
-				
+				// 새로 추가될 파일 목록
 				var hiddenStr = "";
 				
 				for(let i=0; i<realResult.length; i++) {
@@ -617,9 +635,20 @@
 							+ i + "].fileType' value='" + realResult[i].fileType + "'>";
 				}
 				
-				$fileInfo.html(hiddenStr);
 				
-				//$('.form-horizontal').submit();
+				// 기존에 있던 파일 중 삭제될 파일 uuid 목록
+				var delStr = "";
+	  			
+	  			for(let i=0; i<delArr.length; i++) {
+		  			delStr += "<li>";
+		  			delStr += "<input type='text' name='delFileName' value='" + delArr[i] + "'";
+					delStr += "</li>";
+	  			}
+				
+				$fileInfo.append(hiddenStr);
+				$('#delFile').append(delStr);
+				
+				$('.form-horizontal').submit();
 				
 			});	// end of register click
 				
