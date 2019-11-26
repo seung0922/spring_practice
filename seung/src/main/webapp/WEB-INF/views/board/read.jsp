@@ -34,7 +34,7 @@
 <style>
 html {
 	margin: 0px;
-}	
+}
 
 div>h1 {
 	margin-left: 60px;
@@ -67,6 +67,79 @@ div>h1 {
 }
 </style>
 <body id="page-top">
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous"></script>
+	<script type="text/javascript" src="/resources/js/reply.js"></script>
+	<script type="text/javascript">
+	
+		console.log("====================");
+		console.log("JS TEST");
+		$(document).ready(function(){
+			
+			var bnovalue = '<c:out value="${dto.bno}"/>';
+			var replyUL = $(".chat");
+			
+			showList(1);
+			
+			function showList(page){
+				replyService.getList({bno:bnovalue, page:page||1}, function(list){
+					
+					var str="";
+					if(list == null || list.length == 0){
+						replyUL.html("");
+						
+						return;
+					}
+					for(var i = 0, len = list.length || 0; i < len; i++){
+						str += "<li class='left clearfix' data-rno='" +list[i].rno + "'>";
+						str += "<div><div class='header'><strong class='primary-font'>" + list[i].replyer + "</strong>";
+						str += "<small style='float:right;' class = 'pull-right text-muted'>" + replyService.displayTime(list[i].replyDate) + "</small></div>";
+						str += "<p>" + list[i].reply + "</p></div></li>";
+					}
+					replyUL.html(str);
+				})
+			};
+		});
+		
+		/* replyService.getList({bno:bnovalue, page:1}, function(list){
+			for(var i = 0, len = list.length||0; i < len; i++){
+				console.log(list[i]);
+			}
+			
+		}); */
+		
+		/* replyService.add(
+			{reply:"JS TEST12", replyer: "tester1212", bno: bnovalue}
+			,
+			function(result){
+				alert("RESULT: " + result);
+			}
+		); */
+		
+		/* replyService.remove(31, function(count){
+			console.log(count);
+			
+			if(count === "success"){
+				alert("REMOVED");
+			}
+		}, function(err){
+			alert("ERROR...");
+		}); */
+		
+		/* replyService.update({
+			rno : 33,
+			bno : bnovalue,
+			reply : "누나가 미안할건 없음"
+		}, function(result){
+			alert("수정완료 ㅋ");
+		}) */
+		
+		/* replyService.get(2, function(data){
+			console.log(data);
+		}); */
+		
+	</script>
 
 	<!-- Page Wrapper -->
 	<div id="wrapper">
@@ -389,7 +462,7 @@ div>h1 {
 				<div class="container-fluid">
 
 					<!-- Page Heading -->
-					
+
 
 					<!-- DataTales Example -->
 					<div class="card shadow mb-4">
@@ -398,7 +471,7 @@ div>h1 {
 						</div>
 						<div class="card-body">
 							<div class="table-responsive">
-								
+
 								<!-- 여기부터 그거 -->
 
 								<div class="form-group">
@@ -425,43 +498,67 @@ div>h1 {
 											name="mem_wrtier" placeholder="wirter">
 									</div>
 								</div>
-								
+
 								<div class="form-group">
 									<label for="inputEmail3" class="col-sm-1 control-label">File</label>
 									<div class="col-sm-10">
 										<ul id="upload">
-										<c:forEach var="file" items="${fileList}">
-											<li>
-												<c:if test="${file.fileType}">
-													<img alt="error" src="/viewFile?fname=s_${file.uuid}_${file.fileName}&uploadPath=${file.uploadPath}">
-												</c:if>
-												<a href="/download?uploadPath=${file.uploadPath}&fileName=${file.fileName}&uuid=${file.uuid}">
-												<c:out value="${file.fileName }"/></a>
-											</li>
-										</c:forEach>
+											<c:forEach var="file" items="${fileList}">
+												<li><c:if test="${file.fileType}">
+														<img alt="error"
+															src="/viewFile?fname=s_${file.uuid}_${file.fileName}&uploadPath=${file.uploadPath}">
+													</c:if> <a
+													href="/download?uploadPath=${file.uploadPath}&fileName=${file.fileName}&uuid=${file.uuid}">
+														<c:out value="${file.fileName }" />
+												</a></li>
+											</c:forEach>
 										</ul>
 									</div>
 								</div>
-								
+
 								<!-- 여기까지 그거 -->
-								
 							</div>
 						</div>
 					</div>
-					
-					
+
+					<!-- 댓글처리 시작 -->
+					<div class='row'>
+						<div class="col-lg-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<i class="fa fa-comments fa-fw"></i> Reply
+								</div>
+
+								<div class="panel-body">
+									<ul class="chat">
+										<li class="left clearfix" data-rno='12'>
+											<div>
+												<div class="header">
+													<strong class="primary-font">user00</strong> <small
+														class="pull-right text-muted">2019-11-26 20:20</small>
+												</div>
+												<p>Good job!</p>
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
 					<form id="f1" method="get">
-						<input type="hidden" name="page" value="${dto.page }">
-						<input type="hidden" name="amount" value="${dto.amount }">
-						<input type="hidden" id="bno" name="bno" value="${dto.bno }" >
-						<input type="hidden" name="keyword" value="${dto.keyword }" >
-						<input type="hidden" name="type" value="${dto.type }" >
+						<input type="hidden" name="page" value="${dto.page }"> <input
+							type="hidden" name="amount" value="${dto.amount }"> <input
+							type="hidden" id="bno" name="bno" value="${dto.bno }"> <input
+							type="hidden" name="keyword" value="${dto.keyword }"> <input
+							type="hidden" name="type" value="${dto.type }">
 					</form>
-					
+
 					<div class="btns">
-						<button class="btn btn-primary" style="width:100px" value="del">delete</button>
-						<button class="btn btn-primary" style="width:100px" value="upd">Update</button>
-						<button class="btn btn-primary" style="width:100px; float:right;" value="list">List</button>
+						<button class="btn btn-primary" style="width: 100px" value="del">delete</button>
+						<button class="btn btn-primary" style="width: 100px" value="upd">Update</button>
+						<button class="btn btn-primary"
+							style="width: 100px; float: right;" value="list">List</button>
 					</div>
 
 				</div>
@@ -535,34 +632,31 @@ div>h1 {
 	<script src="../../resources/js/demo/datatables-demo.js"></script>
 
 	<script>
-	
-	var f1 = $("#f1");
-	var un = $("#un");
-	var $bno = ${param.bno }
-	
-	$(document).ready(function(){
+		var f1 = $("#f1");
+		var un = $("#un");
 		
-		$(".btns button").on("click", function(){
-			if($(this).val() == 'list'){
-				$("#bno").remove();
-				f1.attr("action", "/board/list");
-			} 
-			if($(this).val() == 'del'){
-				f1.attr("action", "/board/delete");
-			}
-			if($(this).val() == 'upd'){
-				f1.attr("action", "/board/update");
-			}
-			
-			f1.submit();
-		})
-		
-	});
-	
-	
+
+		$(document).ready(function() {
+
+			$(".btns button").on("click", function() {
+				if ($(this).val() == 'list') {
+					$("#bno").remove();
+					f1.attr("action", "/board/list");
+				}
+				if ($(this).val() == 'del') {
+					f1.attr("action", "/board/delete");
+				}
+				if ($(this).val() == 'upd') {
+					f1.attr("action", "/board/update");
+				}
+
+				f1.submit();
+			})
+
+		});
 	</script>
 
-	
+
 </body>
 
 </html>
