@@ -10,6 +10,12 @@ public class PageDTO {
 	private int amount = 10;
 	private String type, keyword;
 	
+
+	public PageDTO(int page, int amount) {
+		this.page = page;
+		this.amount = amount;
+	}
+	
 	public int getSkip() {
 		return (page - 1) * amount;
 	}
@@ -21,5 +27,9 @@ public class PageDTO {
 		
 		return type.split("");
 	}
+
+	public PageDTO() {
+	}
+
 	
 }
