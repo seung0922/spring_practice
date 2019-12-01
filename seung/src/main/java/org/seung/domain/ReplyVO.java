@@ -9,6 +9,8 @@ public class ReplyVO {
 
 	private Integer rno;
 	private Integer bno;
+	private Integer byrno;
+	private Integer depth;
 	
 	private String reply;
 	private String replyer;

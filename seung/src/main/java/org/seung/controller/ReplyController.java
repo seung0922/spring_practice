@@ -2,6 +2,7 @@ package org.seung.controller;
 
 import java.util.List;
 
+import org.seung.domain.ReplyPageDTO;
 import org.seung.domain.ReplyVO;
 import org.seung.dto.PageDTO;
 import org.seung.service.ReplyService;
@@ -28,31 +29,45 @@ public class ReplyController {
 
 	private ReplyService service;
 	
+	@GetMapping(value = "/pages/{bno}/{page}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("page") int page, @PathVariable("bno") Integer bno){
+		
+		PageDTO pg = new PageDTO(page, 10);
+		
+		log.info("get Reply List bno: " + bno);
+		
+		log.info("pg: " + pg);
+		
+		return new ResponseEntity<>(service.getListPage(pg, bno), HttpStatus.OK);
+	}
+	
+	// 대댓글
+	@GetMapping(value = "/pages/{bno}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<List<ReplyVO>> getList2(@PathVariable("bno") Integer bno){
+		
+		log.info("대댓글......................");
+		log.info("get Reply List bno: " + bno);
+		
+		return new ResponseEntity<>(service.getList2(bno), HttpStatus.OK);
+	}
+	
 	@PostMapping(value = "/new", consumes = "application/json", produces = {MediaType.TEXT_PLAIN_VALUE})
 	public ResponseEntity<String> create(@RequestBody ReplyVO vo){
 		log.info("ReplyVO: " + vo);
 		
-		int insertCount = service.register(vo);
+		int insertCount = 0;
+		
+		// 댓글일때
+		if(vo.getDepth() == 0) {
+			insertCount = service.register(vo);
+			
+		} else { // 대댓글일때
+			insertCount = service.registerReply(vo);
+		}
 		
 		log.info("Reply Insert Count" + insertCount);
-		
 		return insertCount == 1 ? new ResponseEntity<>("success", HttpStatus.OK) :
 			new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	@GetMapping(value = "/pages/{bno}/{page}", produces = {MediaType.TEXT_PLAIN_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<List<ReplyVO>> getList(@PathVariable("page") int page,
-												 @PathVariable("bno") Integer bno){
-		
-		log.info("get List....................댓글 페이징");
-		
-		PageDTO pg = new PageDTO(page, 10);
-		
-		log.info(pg);
-		
-		log.info("??: " + service.getList(pg,bno));
-		
-		return new ResponseEntity<>(service.getList(pg, bno), HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/{rno}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})

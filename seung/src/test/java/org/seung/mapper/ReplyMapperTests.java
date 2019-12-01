@@ -25,6 +25,21 @@ public class ReplyMapperTests {
 	private ReplyMapper mapper;
 	
 	@Test
+	public void replyTest() {
+		log.info(mapper.getListWithPaging2(9));
+	}
+	
+	@Test
+	public void testList2() {
+		
+		PageDTO pg = new PageDTO(1, 10);
+		
+		List<ReplyVO> replies = mapper.getListWithPaging(pg, 9);
+		
+		replies.forEach(reply -> log.info(reply));
+	}
+	
+	@Test
 	public void testList() {
 		
 		PageDTO pg = new PageDTO();
@@ -64,6 +79,7 @@ public class ReplyMapperTests {
 			vo.setBno(bnoArr[i%5]);
 			vo.setReply("댓글테스트" + i);
 			vo.setReplyer("replyer" + i);
+			vo.setByrno(5);
 			
 			mapper.insert(vo);
 		});

@@ -10,6 +10,8 @@ public interface ReplyMapper {
 
 	public int insert(ReplyVO vo);
 	
+	public int insertReply(ReplyVO vo);
+	
 	public ReplyVO read(Integer rno);
 	
 	public int delete(Integer rno);
@@ -20,4 +22,10 @@ public interface ReplyMapper {
 			@Param("pg") PageDTO pg,
 			@Param("bno") Integer bno
 			);
+	
+	public List<ReplyVO> getListWithPaging2(@Param("bno") Integer bno);
+	
+	public int getCountByBno(Integer bno);
+	
+	public int deleteByBno(Integer bno);
 }

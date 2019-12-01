@@ -2,6 +2,7 @@ package org.seung.service;
 
 import java.util.List;
 
+import org.seung.domain.ReplyPageDTO;
 import org.seung.domain.ReplyVO;
 import org.seung.dto.PageDTO;
 import org.seung.mapper.ReplyMapper;
@@ -24,6 +25,14 @@ public class ReplyServiceImpl implements ReplyService{
 		log.info("register.............." + vo);
 		
 		return mapper.insert(vo);
+	}
+	
+	@Override
+	public int registerReply(ReplyVO vo) {
+		
+		log.info("register reply.............." + vo);
+		
+		return mapper.insertReply(vo);
 	}
 
 	@Override
@@ -57,5 +66,18 @@ public class ReplyServiceImpl implements ReplyService{
 		
 		return mapper.getListWithPaging(pg, bno);
 	}
+
+	@Override
+	public ReplyPageDTO getListPage(PageDTO pg, Integer bno) {
+
+		return new ReplyPageDTO(mapper.getCountByBno(bno), mapper.getListWithPaging(pg, bno));
+	}
+
+	@Override
+	public List<ReplyVO> getList2(Integer bno) {
+		
+		return mapper.getListWithPaging2(bno);
+	}
+
 
 }

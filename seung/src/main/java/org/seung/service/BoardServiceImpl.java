@@ -6,6 +6,7 @@ import org.seung.domain.BoardVO;
 import org.seung.dto.PageDTO;
 import org.seung.mapper.AttachMapper;
 import org.seung.mapper.BoardMapper;
+import org.seung.mapper.ReplyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,9 @@ public class BoardServiceImpl implements BoardService {
 
 	@Autowired
 	private AttachMapper attachMapper;
+	
+	@Autowired
+	private ReplyMapper replyMapper;
 	
 	@Override
 	@Transactional
@@ -65,9 +69,12 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
+	@Transactional
 	public boolean delete(Integer bno) {
 
 		log.info("delete 궁쓰......................");
+		
+		replyMapper.deleteByBno(bno);
 
 		return mapper.delete(bno);
 	}

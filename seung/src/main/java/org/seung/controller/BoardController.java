@@ -7,6 +7,7 @@ import org.seung.dto.PageDTO;
 import org.seung.dto.PageMaker;
 import org.seung.service.AttachService;
 import org.seung.service.BoardService;
+import org.seung.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,8 +29,12 @@ public class BoardController {
 	private BoardService boardService;
 	
 	@Autowired
+	private ReplyService replyService;
+	
+	@Autowired
 	private AttachService attachService;
 
+	
 	@GetMapping("/register")
 	public void registerGET() {
 		log.info("Get register........................");
@@ -69,6 +74,7 @@ public class BoardController {
 
 		model.addAttribute("result", boardService.selectByBno(dto.getBno()));
 		model.addAttribute("fileList", attachService.getAttachList(dto.getBno()));
+		model.addAttribute("repl", replyService.getListPage(dto, dto.getBno()));
 	}
 
 	@GetMapping("/delete")

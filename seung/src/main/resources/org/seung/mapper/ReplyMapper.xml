@@ -5,9 +5,20 @@
 
 <mapper namespace="org.seung.mapper.ReplyMapper">
 
+<!-- 그냥 댓글... -->
 <insert id="insert">
-	insert into tbl_reply (bno, reply, replyer)
-	values (#{bno}, #{reply}, #{replyer})
+	<selectKey resultType="int" keyProperty="byrno" order="BEFORE">
+		select max(rno)+1 from tbl_reply
+    </selectKey>
+
+	insert into tbl_reply (bno, reply, replyer, byrno, depth)
+	values (#{bno}, #{reply}, #{replyer}, #{byrno}, #{depth})
+</insert>
+
+<!-- 대댓글... -->
+<insert id="insertReply">
+	insert into tbl_reply (bno, reply, replyer, byrno, depth)
+	values (#{bno}, #{reply}, #{replyer}, #{byrno}, #{depth})
 </insert>
 
 <select id="read" resultType="org.seung.domain.ReplyVO">
@@ -26,11 +37,27 @@
 	where rno = #{rno}
 </update>
 
+<!-- 댓글 -->
 <select id="getListWithPaging" resultType="org.seung.domain.ReplyVO">
-	select rno, bno, reply, replyer, replyDate, updatedate
+	<!-- select rno, bno, reply, replyer, replyDate, updatedate
 	from tbl_reply
 	where bno = #{bno}
-	order by rno asc
+	order by rno asc -->
+	select * from tbl_reply
+	where bno = #{bno}
+	and rno > 0
+	order by byrno, depth
+	limit #{pg.skip}, #{pg.amount}
 </select>
+
+<select id="getCountByBno" resultType="int">
+	select count(rno) from tbl_reply
+	where bno = #{bno}
+</select>
+
+<delete id="deleteByBno">
+	delete from tbl_reply
+	where bno = #{bno}
+</delete>
 
 </mapper>
